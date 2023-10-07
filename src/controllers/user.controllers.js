@@ -8,7 +8,8 @@ class UserController {
             preferredFirstName: body.preferredFirstName,
             firstName: body.firstName,
             lastName: body.lastName,
-            password: body.password
+            password: body.password,
+            bio: body.bio
         };
 
         try {
