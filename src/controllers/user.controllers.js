@@ -44,6 +44,30 @@ class UserController {
             });
         }
     };
+    activate = async (req, res) => {
+        const {
+            query: { activationToken }
+        } = req;
+
+        if (!activationToken) {
+            res.status(400).json({
+                message: "Activation Token is missing"
+            });
+            return;
+        }
+
+        try {
+            await userService.activate(activationToken);
+
+            res.status(200).json({
+                message: "Success"
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            });
+        }
+    };
 }
 
 export const userController = new UserController();

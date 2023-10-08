@@ -21,6 +21,7 @@ model User {
     password           String
     bio                String
     status             AccountStatus @default(INACTIVE)
+    activationToken    String?
     createdAt          DateTime      @default(now())
     updatedAt          DateTime      @updatedAt
 }
