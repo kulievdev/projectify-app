@@ -1,5 +1,6 @@
 import { prisma } from "../prisma/index.js";
 import { hasher } from "../utils/hash.js";
+import { mailer } from "../utils/mailer.js";
 
 class UserService {
     signUp = async (input) => {
@@ -8,6 +9,8 @@ class UserService {
             await prisma.user.create({
                 data: { ...input, password: hashedPassword }
             });
+
+            await mailer.sendActivationMail(input.email, "hdaskjdhaskjd");
         } catch (error) {
             console.log(error);
             throw new Error(error);
@@ -23,6 +26,11 @@ class UserService {
             });
 
             if (!user) throw new Error("Invalid Credentials");
+            if (user.status === "INACTIVE") {
+                throw new Error(
+                    "Email address is not verified. Verify your email."
+                );
+            }
 
             const isPasswordMatches = await hasher.compare(
                 input.password,
