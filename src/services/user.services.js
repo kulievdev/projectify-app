@@ -1,13 +1,17 @@
 import { prisma } from "../prisma/index.js";
 import { hasher, crypto } from "../utils/hash.js";
 import { mailer } from "../utils/mailer.js";
+import { date } from "../utils/data.js";
 
 class UserService {
     signUp = async (input) => {
         try {
             const hashedPassword = await hasher.hash(input.password);
+
             const activationToken = crypto.createToken();
+
             const hashedActivationToken = crypto.hash(activationToken);
+
             await prisma.user.create({
                 data: {
                     ...input,
@@ -104,6 +108,42 @@ class UserService {
                     activationToken: ""
                 }
             });
+        } catch (error) {
+            throw error;
+        }
+    };
+    forgotPassword = async (email) => {
+        try {
+            const user = prisma.user.findFirst({
+                where: {
+                    email
+                },
+                select: {
+                    id: true
+                }
+            });
+
+            if (!user) {
+                throw new Error(
+                    "We could not find a user with the email you provided"
+                );
+            }
+
+            const passwordResetToken = crypto.createToken();
+
+            const hashedPasswordResetToken = crypto.hash(passwordResetToken);
+
+            await prisma.user.update({
+                where: {
+                    id: user.id
+                },
+                data: {
+                    passwordResetToken: hashedPasswordResetToken,
+                    passwordResetTokenExpirationDate: date.addMinutes(10)
+                }
+            });
+
+            await mailer.sendPasswordResetToken(email, passwordResetToken);
         } catch (error) {
             throw error;
         }
