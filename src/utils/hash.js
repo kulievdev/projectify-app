@@ -1,15 +1,15 @@
-import bcrypt from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import cryptojs from "crypto-js";
 
 class Bcrypt {
     hash = async (password) => {
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(password, salt);
+        const salt = await bcryptjs.genSalt(10);
+        const hash = await bcryptjs.hash(password, salt);
         return hash;
     };
 
     compare = async (password, hash) => {
-        return await bcrypt.compare(password, hash);
+        return await bcryptjs.compare(password, hash);
     };
 }
 
@@ -44,5 +44,5 @@ class Crypto {
     };
 }
 
-export const hasher = new Bcrypt();
+export const bcrypt = new Bcrypt();
 export const crypto = new Crypto();
