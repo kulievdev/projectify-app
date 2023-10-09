@@ -68,6 +68,22 @@ class UserController {
             });
         }
     };
+    forgotPassword = async (req, res) => {
+        const {
+            body: { email }
+        } = req;
+
+        try {
+            await userService.forgotPassword(email);
+            res.status(200).json({
+                message: "Password reset email has been sent"
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            });
+        }
+    };
 }
 
 export const userController = new UserController();
