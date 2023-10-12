@@ -1,6 +1,7 @@
 import { prisma } from "../prisma/index.js";
-import { crypto, bcrypt } from "../utils/hash.js";
+import { crypto } from "../utils/crypto.js";
 import { mailer } from "../utils/mailer.js";
+import { bcrypt } from "../utils/bcrypt.js";
 import { date } from "../utils/date.js";
 
 class UserService {
@@ -64,6 +65,17 @@ class UserService {
             if (!isPasswordMatches) {
                 throw new Error("Invalid Credentials");
             }
+
+            const sessionId = crypto.createToken();
+            const hashedSessionId = crypto.hash(sessionId);
+            await prisma.session.create({
+                data: {
+                    sessionId: hashedSessionId,
+                    userId: user.id
+                }
+            });
+
+            return sessionId;
         } catch (error) {
             throw error;
         }
@@ -172,6 +184,60 @@ class UserService {
                     password: await bcrypt.hash(password),
                     passwordResetToken: null,
                     passwordResetTokenExpirationDate: null
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    getMe = async (sessionId) => {
+        const hashedSessionId = crypto.hash(sessionId);
+
+        try {
+            const session = await prisma.session.findFirst({
+                where: {
+                    sessionId: hashedSessionId
+                },
+
+                select: {
+                    userId: true
+                }
+            });
+
+            if (!session) {
+                throw new Error("Not Authenticated");
+            }
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: session.userId
+                },
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    preferredFirstName: true,
+                    email: true
+                }
+            });
+
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            return user;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    logout = async (sessionId) => {
+        const hashedSessionId = crypto.hash(sessionId);
+
+        try {
+            await prisma.session.deleteMany({
+                where: {
+                    sessionId: hashedSessionId
                 }
             });
         } catch (error) {
