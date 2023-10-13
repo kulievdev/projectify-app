@@ -14,6 +14,7 @@ export class CookieMiddleware {
             cookies.sessionId.slice(2),
             process.env.COOKIE_SECRET
         );
+
         if (!sessionId) {
             res.status(401).json({
                 message: "Invalid Credentials"

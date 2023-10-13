@@ -41,6 +41,7 @@ class UserController {
                 httpOnly: true,
                 secure: true
             });
+
             res.send();
         } catch (error) {
             let statusCode = 500;
