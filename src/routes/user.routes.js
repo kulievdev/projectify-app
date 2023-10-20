@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { userController } from "../controllers/user.controller.js";
-// import { CookieMiddleware } from "../middlewares/cookie.middleware.js";
+import { CookieMiddleware } from "../middlewares/cookie.middleware.js";
 import { userMiddleware } from "../middlewares/user.middleware.js";
 
 const userRouter = Router();
@@ -15,6 +15,35 @@ userRouter.delete(
     "/logout",
     userMiddleware.authenticate,
     userController.logout
+);
+userRouter.patch(
+    "/me/tasks",
+    userMiddleware.authenticate,
+    userController.createTask
+);
+
+userRouter.get(
+    "/me/tasks",
+    userMiddleware.authenticate,
+    userController.getTasks
+);
+
+userRouter.get(
+    "/me/tasks/:taskId",
+    userMiddleware.authenticate,
+    userController.getTask
+);
+
+userRouter.patch(
+    "/me/tasks/:taskId",
+    userMiddleware.authenticate,
+    userController.updateTask
+);
+
+userRouter.delete(
+    "/me/tasks/:taskId/delete",
+    userMiddleware.authenticate,
+    userController.deleteTask
 );
 
 export { userRouter };
