@@ -21,6 +21,16 @@ class ProjectController {
             data: project
         });
     });
+
+    getOne = catchAsync(async (req, res) => {
+        const { userId, params } = req;
+
+        const project = await projectService.getOne(params.id, userId);
+
+        res.status(200).json({
+            data: project
+        });
+    });
 }
 
 export const projectController = new ProjectController();
