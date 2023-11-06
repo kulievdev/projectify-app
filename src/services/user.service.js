@@ -8,18 +8,30 @@ import { v4 as uuid } from "uuid";
 import { CustomError } from "../utils/custom-error.js";
 
 class UserService {
-    signUp = async (input) => {
-        const hashedPassword = await bcrypt.hash(input.password);
+    signUp = async (userInput, companyInput) => {
+        const hashedPassword = await bcrypt.hash(userInput.password);
         const activationToken = crypto.createToken();
         const hashedActivationToken = crypto.hash(activationToken);
-        await prisma.user.create({
+
+        const user = await prisma.user.create({
             data: {
-                ...input,
+                ...userInput,
                 password: hashedPassword,
                 activationToken: hashedActivationToken
+            },
+            select: {
+                id: true
             }
         });
-        await mailer.sendActivationMail(input.email, activationToken);
+
+        await prisma.company.create({
+            data: {
+                ...companyInput,
+                userId: user.id
+            }
+        });
+
+        await mailer.sendActivationMail(userInput.email, activationToken);
     };
 
     login = async (input) => {
@@ -178,13 +190,24 @@ class UserService {
                 firstName: true,
                 lastName: true,
                 preferredFirstName: true,
-                email: true
+                email: true,
+                id: true // We now also select the id to query the company information
             }
         });
 
-        if (!user) throw new CustomError("User not found", 404);
+        if (!user) {
+            throw new Error("User does not exist anymore, 404");
+        }
 
-        return user;
+        const company = await prisma.company.findFirst({
+            where: { userId: user.id },
+            select: {
+                name: true,
+                position: true
+            }
+        });
+
+        return { ...user, company };
     };
 
     createTask = async (userId, input) => {
