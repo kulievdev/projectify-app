@@ -5,19 +5,26 @@ import { CustomError } from "../utils/custom-error.js";
 
 class UserController {
     signUp = catchAsync(async (req, res) => {
-        const { body } = req;
+        const { email, preferredName, firstName, lastName, password, company } =
+            req.body;
 
-        const input = {
-            email: body.email,
-            preferredFirstName: body.preferredName,
-            firstName: body.firstName,
-            lastName: body.lastName,
-            password: body.password
+        const userInput = {
+            email,
+            preferredFirstName: preferredName,
+            firstName,
+            lastName,
+            password
         };
 
-        await userService.signUp(input);
+        const companyInput = {
+            name: company.name,
+            position: company.position
+        };
+
+        await userService.signUp(userInput, companyInput);
+
         res.status(201).json({
-            message: "Success"
+            message: "User registration successful, with company details!"
         });
     });
 
