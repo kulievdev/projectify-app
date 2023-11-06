@@ -31,6 +31,48 @@ class ProjectController {
             data: project
         });
     });
+
+    update = catchAsync(async (req, res) => {
+        const { body, params, userId } = req;
+        const update = {};
+
+        if (body.name) {
+            update.name = body.name;
+        }
+        if (body.description) {
+            update.description = body.description;
+        }
+
+        if (!update.name && !update.description) {
+            throw new CustomError("No update data provided", 400);
+        }
+
+        await projectService.update(params.id, userId, update);
+        res.status(204).send();
+    });
+
+    getAll = catchAsync(async (req, res) => {
+        const { userId } = req;
+
+        const projects = await projectService.getAll(userId);
+        res.status(200).json({
+            data: projects
+        });
+    });
+
+    archive = catchAsync(async (req, res) => {
+        const { params, userId } = req;
+
+        await projectService.changeStatus(params.id, userId, "ARCHIVED");
+        res.status(204).send();
+    });
+
+    reactivate = catchAsync(async (req, res) => {
+        const { params, userId } = req;
+
+        await projectService.changeStatus(params.id, userId, "ACTIVE");
+        res.status(204).send();
+    });
 }
 
 export const projectController = new ProjectController();

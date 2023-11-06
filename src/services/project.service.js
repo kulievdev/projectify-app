@@ -32,6 +32,41 @@ class ProjectService {
 
         return project;
     };
+
+    update = async (id, userId, update) => {
+        await prisma.project.update({
+            where: {
+                id: id,
+                userId: userId
+            },
+            data: {
+                ...update
+            }
+        });
+    };
+
+    getAll = async (userId) => {
+        const projects = await prisma.project.findMany({
+            where: {
+                userId: userId
+            }
+        });
+
+        return projects;
+    };
+
+    changeStatus = async (id, userId, status) => {
+        await prisma.project.update({
+            where: {
+                id: id,
+                userId: userId
+            },
+
+            data: {
+                status: status
+            }
+        });
+    };
 }
 
 export const projectService = new ProjectService();

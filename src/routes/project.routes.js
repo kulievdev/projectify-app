@@ -11,4 +11,22 @@ projectRouter.get(
     projectController.getOne
 );
 
+projectRouter.patch(
+    "/:id",
+    userMiddleware.authenticate,
+    projectController.update
+);
+projectRouter.get("/", userMiddleware.authenticate, projectController.getAll);
+
+projectRouter.patch(
+    "/:id/archive",
+    userMiddleware.authenticate,
+    projectController.archive
+);
+projectRouter.patch(
+    "/:id/reactivate",
+    userMiddleware.authenticate,
+    projectController.reactivate
+);
+
 export { projectRouter };
