@@ -5,7 +5,7 @@ import { bcrypt } from "../utils/bcrypt.js";
 import { date } from "../utils/date.js";
 import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
-import { CustomError } from "../utils/custom-error.js";
+import { CustomError } from "../errors/customError.js";
 
 class UserService {
     signUp = async (userInput, companyInput) => {

@@ -1,5 +1,5 @@
 import { projectService } from "../services/project.service.js";
-import { catchAsync } from "../utils/catchAsync.js";
+import { catchAsync } from "../errors/catchAsync.js";
 import { CustomError } from "../errors/customError.js";
 
 class ProjectController {

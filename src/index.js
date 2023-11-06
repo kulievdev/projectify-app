@@ -1,5 +1,8 @@
 import express from "express";
+
 import { userRouter } from "./routes/user.routes.js";
+import { projectRouter } from "./routes/project.routes.js";
+
 import dotenv from "dotenv";
 import { GlobalError } from "./middlewares/global-error.middleware.js";
 
