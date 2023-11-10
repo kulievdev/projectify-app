@@ -26,7 +26,7 @@ type Tasks {
     status      TaskStatus
 }
 
-model User {
+model Admin {
     id                               String        @id @default(auto()) @map("_id") @db.ObjectId
     email                            String        @unique
     preferredFirstName               String?
@@ -46,7 +46,7 @@ model Company {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     name      String
     position  String
-    userId    String   @unique @db.ObjectId
+    adminId   String   @unique @db.ObjectId
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
@@ -56,7 +56,7 @@ model Project {
     name        String
     description String
     status      ProjectStatus @default(ACTIVE)
-    userId      String        @db.ObjectId
+    adminId     String        @db.ObjectId
     createdAt   DateTime      @default(now())
     updatedAt   DateTime      @updatedAt
 }
@@ -72,7 +72,7 @@ model TeamMember {
     lastName    String
     email       String   @unique
     password    String?
-    userId      String   @db.ObjectId
+    adminId     String   @db.ObjectId
     inviteToken String?  @unique
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
