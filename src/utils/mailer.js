@@ -7,7 +7,7 @@ class Mailer {
             port: 587,
             secure: false,
             auth: {
-                admin: process.env.MAILER_ADDRESS,
+                user: process.env.MAILER_ADDRESS,
                 pass: process.env.MAILER_PASS
             }
         });
