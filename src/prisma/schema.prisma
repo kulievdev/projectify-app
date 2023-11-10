@@ -43,10 +43,12 @@ model User {
 }
 
 model Company {
-    id       String @id @default(auto()) @map("_id") @db.ObjectId
-    name     String
-    position String
-    userId   String @unique @db.ObjectId
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    name      String
+    position  String
+    userId    String   @unique @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Project {
@@ -55,9 +57,23 @@ model Project {
     description String
     status      ProjectStatus @default(ACTIVE)
     userId      String        @db.ObjectId
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
 }
 
 enum ProjectStatus {
     ACTIVE
     ARCHIVED
+}
+
+model TeamMember {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    firstName   String
+    lastName    String
+    email       String   @unique
+    password    String?
+    userId      String   @db.ObjectId
+    inviteToken String?  @unique
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 }
