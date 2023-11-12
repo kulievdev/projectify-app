@@ -1,5 +1,4 @@
 import { adminService } from "../services/admin.service.js";
-import jwt from "jsonwebtoken";
 import { catchAsync } from "../errors/catchAsync.js";
 import { CustomError } from "../errors/customError.js";
 
