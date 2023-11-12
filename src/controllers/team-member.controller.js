@@ -9,12 +9,18 @@ class TeamMemberController {
         const input = {
             firstName: body.firstName,
             lastName: body.lastName,
-            email: body.email
+            email: body.email,
+            position: body.position
         };
 
-        if (!input.firstName || !input.lastName || !input.email) {
+        if (
+            !input.firstName ||
+            !input.lastName ||
+            !input.email ||
+            !input.position
+        ) {
             throw new CustomError(
-                "All fields are required: first name, last name and email",
+                "All fields are required: first name, last name, email and position",
                 400
             );
         }
@@ -50,6 +56,16 @@ class TeamMemberController {
 
         res.status(200).json({
             message: "You successfully created a password. Now you can login."
+        });
+    });
+
+    getAll = catchAsync(async (req, res) => {
+        const { adminId } = req;
+
+        const teamMembers = await teamMemberService.getAll(adminId);
+
+        res.status(200).json({
+            data: teamMembers
         });
     });
 }
