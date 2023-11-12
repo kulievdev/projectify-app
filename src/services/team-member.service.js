@@ -67,6 +67,33 @@ class TeamMemberService {
 
         return teamMembers;
     };
+
+    changeStatus = async (adminId, teamMemberId, status) => {
+        const teamMember = await prisma.teamMember.findFirst({
+            where: {
+                id: teamMemberId,
+                adminId: adminId
+            }
+        });
+
+        if (!teamMember) {
+            throw new CustomError(
+                "Forbidden: Team member does not belong to your team",
+                403
+            );
+        }
+
+        await prisma.teamMember.update({
+            where: {
+                id: teamMemberId,
+                adminId: adminId
+            },
+
+            data: {
+                status: status
+            }
+        });
+    };
 }
 
 export const teamMemberService = new TeamMemberService();

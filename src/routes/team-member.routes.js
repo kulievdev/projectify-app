@@ -17,4 +17,16 @@ teamMemberRouter.get(
     teamMemberController.getAll
 );
 
+teamMemberRouter.patch(
+    "/deactivate",
+    authMiddleware.authenticate,
+    teamMemberController.deactivate
+);
+
+teamMemberRouter.patch(
+    "/reactivate",
+    authMiddleware.authenticate,
+    teamMemberController.reactivate
+);
+
 export { teamMemberRouter };
