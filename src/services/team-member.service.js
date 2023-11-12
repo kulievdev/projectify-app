@@ -22,27 +22,29 @@ class TeamMemberService {
         );
     };
 
-    createPassword = async (inviteToken, password) => {
+    createPassword = async (inviteToken, password, email) => {
         const hashedInviteToken = crypto.hash(inviteToken);
         const hashedPassword = await crypto.hash(password);
 
-        const admin = await prisma.teamMember.findFirst({
+        const teamMember = await prisma.teamMember.findFirst({
             where: {
                 inviteToken: hashedInviteToken
             }
         });
 
-        if (!admin) {
+        if (!teamMember) {
             throw new CustomError("Invalid Token", 400);
         }
 
         await prisma.teamMember.update({
             where: {
+                email: email,
                 inviteToken: hashedInviteToken
             },
 
             data: {
                 password: hashedPassword,
+                status: "ACTIVE",
                 inviteToken: null
             }
         });

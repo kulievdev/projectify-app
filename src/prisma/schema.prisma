@@ -67,13 +67,14 @@ enum ProjectStatus {
 }
 
 model TeamMember {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    id          String        @id @default(auto()) @map("_id") @db.ObjectId
     firstName   String
     lastName    String
-    email       String   @unique
+    email       String        @unique
     password    String?
-    adminId     String   @db.ObjectId
-    inviteToken String?  @unique
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    status      AccountStatus @default(INACTIVE)
+    adminId     String        @db.ObjectId
+    inviteToken String?
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
 }
