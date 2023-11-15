@@ -24,7 +24,7 @@ class TeamMemberService {
 
     createPassword = async (inviteToken, password, email) => {
         const hashedInviteToken = crypto.hash(inviteToken);
-        const hashedPassword = await crypto.hash(password);
+        const hashedPassword = await bcrypt.hash(password);
 
         const teamMember = await prisma.teamMember.findFirst({
             where: {
@@ -93,6 +93,25 @@ class TeamMemberService {
                 status: status
             }
         });
+    };
+
+    isTeamMemberBelongsToAdmin = async (id, adminId) => {
+        const teamMember = await prisma.teamMember.findUnique({
+            where: {
+                id
+            }
+        });
+
+        if (!teamMember) {
+            throw new CustomError("Team member does not exist", 404);
+        }
+
+        if (teamMember.adminId !== adminId) {
+            throw new CustomError(
+                "Forbidden: You are not authorized to perform this action",
+                403
+            );
+        }
     };
 }
 
