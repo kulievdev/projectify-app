@@ -3,6 +3,7 @@ import express from "express";
 import { adminRouter } from "./routes/admin.routes.js";
 import { projectRouter } from "./routes/project.routes.js";
 import { teamMemberRouter } from "./routes/team-member.routes.js";
+import { storyRouter } from "./routes/story.routes.js";
 
 import dotenv from "dotenv";
 import { GlobalError } from "./middlewares/global-error.middleware.js";
@@ -17,6 +18,7 @@ const PORT = process.env.PORT || 4000;
 app.use("/admins", adminRouter);
 app.use("/projects", projectRouter);
 app.use("/team-members", teamMemberRouter);
+app.use("/stories", storyRouter);
 app.use(GlobalError.handle);
 
 app.listen(PORT, () => {

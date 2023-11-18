@@ -18,6 +18,13 @@ enum TaskStatus {
     DONE
 }
 
+enum StoryStatus {
+    TODO
+    INPROGRESS
+    DONE
+    ARCHIVED
+}
+
 enum TeamMemberProjectStatus {
     ACTIVE
     INACTIVE
@@ -91,4 +98,18 @@ model TeamMemberProject {
     projectId    String                  @db.ObjectId
     status       TeamMemberProjectStatus @default(ACTIVE)
     joinedAt     DateTime                @default(now())
+}
+
+model Story {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    projectId String   @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    title       String
+    description String?
+    status      StoryStatus @default(TODO)
+    point       Int?
+    due         DateTime?
+    assigneeId  String?     @db.ObjectId
 }
