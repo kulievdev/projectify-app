@@ -1,4 +1,4 @@
-import { catchAsync } from "../utils/catch-async.js";
+import { catchAsync } from "../errors/catchAsync.js";
 import { CustomError } from "../errors/customError.js";
 import { storyService } from "../services/story.service.js";
 
