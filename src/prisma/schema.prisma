@@ -101,10 +101,8 @@ model TeamMemberProject {
 }
 
 model Story {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    projectId String   @db.ObjectId
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    projectId String @db.ObjectId
 
     title       String
     description String?
@@ -112,4 +110,7 @@ model Story {
     point       Int?
     due         DateTime?
     assigneeId  String?     @db.ObjectId
+    adminId     String      @db.ObjectId
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
 }
