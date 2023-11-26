@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import { CustomError } from "../errors/customError.js";
 import { catchAsync } from "../errors/catchAsync.js";
+import { storyService } from "../services/story.service.js";
+import { prisma } from "../prisma/index.js";
 
 class AuthMiddleware {
     authenticate = (req, _, next) => {
@@ -51,7 +53,7 @@ class AuthMiddleware {
                 params: { id }
             } = req;
 
-            const story = storyService.getOne(id);
+            const story = await storyService.getOne(id);
             const { projectId } = story;
 
             const project = await prisma.project.findUnique({

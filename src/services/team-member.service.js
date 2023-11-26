@@ -91,6 +91,12 @@ class TeamMemberService {
             );
         }
 
+        if (teamMember.status === status)
+            throw new CustomError(
+                `This Team Member already has ${status} status!`,
+                400
+            );
+
         await prisma.teamMember.update({
             where: {
                 id: teamMemberId,

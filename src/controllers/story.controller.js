@@ -27,12 +27,15 @@ class StoryController {
         });
     });
 
-    getOne = (req, res) => {
-        const { story } = req;
+    getOne = catchAsync(async (req, res) => {
+        const { params } = req;
+
+        const story = await storyService.getOne(params.id);
+
         res.status(200).json({
             data: story
         });
-    };
+    });
 }
 
 export const storyController = new StoryController();

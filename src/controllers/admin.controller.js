@@ -73,7 +73,7 @@ class AdminController {
         } = req;
         if (!password || !passwordConfirm) {
             throw new CustomError(
-                "Both Password and Pasword Confirmation are required",
+                "Both Password and Password Confirmation are required",
                 400
             );
         }

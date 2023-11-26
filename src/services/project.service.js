@@ -90,6 +90,13 @@ class ProjectService {
                 403
             );
         }
+
+        if (project.status === status)
+            throw new CustomError(
+                `The project already has ${status} status!`,
+                400
+            );
+
         await prisma.project.update({
             where: {
                 id: id,
@@ -124,6 +131,20 @@ class ProjectService {
             teamMemberId,
             adminId
         );
+
+        const teamMemberProject = await prisma.teamMemberProject.findFirst({
+            where: {
+                projectId,
+                teamMemberId
+            }
+        });
+
+        if (teamMemberProject.status === status)
+            throw new CustomError(
+                `This contributor already has ${status} status!`,
+                400
+            );
+
         await prisma.teamMemberProject.updateMany({
             where: {
                 projectId,
