@@ -11,19 +11,11 @@ storyRouter.post(
     storyController.create
 );
 
-storyRouter.get("/:id", authMiddleware.authenticate, storyController.getOne);
-storyRouter.get("/", authMiddleware.authenticate, storyController.getAll);
-storyRouter.patch(
+storyRouter.get(
     "/:id",
     authMiddleware.authenticate,
-    authMiddleware.isAdmin,
-    storyController.update
-);
-storyRouter.delete(
-    "/:id",
-    authMiddleware.authenticate,
-    authMiddleware.isAdmin,
-    storyController.deleteOne
+    authMiddleware.verifyReadUpdateDeleteStoryPermissions,
+    storyController.getOne
 );
 
 export { storyRouter };

@@ -73,14 +73,20 @@ class TeamMemberService {
     changeStatus = async (adminId, teamMemberId, status) => {
         const teamMember = await prisma.teamMember.findFirst({
             where: {
-                id: teamMemberId,
-                adminId: adminId
+                id: teamMemberId
             }
         });
 
         if (!teamMember) {
             throw new CustomError(
-                "Forbidden: Team member does not belong to your team",
+                `Team member does not exist with following id ${teamMemberId}`,
+                404
+            );
+        }
+
+        if (teamMember.adminId !== adminId) {
+            throw new CustomError(
+                "Forbidden: You are not authorized to perform this action",
                 403
             );
         }
@@ -125,7 +131,9 @@ class TeamMemberService {
                 id: true,
                 status: true,
                 password: true,
-                adminId: true
+                adminId: true,
+                firstName: true,
+                lastName: true
             }
         });
 
@@ -186,8 +194,7 @@ class TeamMemberService {
             {
                 teamMember: {
                     id: teamMember.id,
-                    adminId: teamMember.adminId,
-                    projects: projectIds
+                    adminId: teamMember.adminId
                 }
             },
             process.env.JWT_SECRET,
@@ -196,7 +203,12 @@ class TeamMemberService {
             }
         );
 
-        return token;
+        const teamMemberWithoutPassword = {
+            firstName: teamMember.firstName,
+            lastName: teamMember.lastName
+        };
+
+        return { token, projectIds, me: teamMemberWithoutPassword };
     };
 }
 

@@ -12,7 +12,6 @@ class AdminService {
         const hashedPassword = await bcrypt.hash(adminInput.password);
         const activationToken = crypto.createToken();
         const hashedActivationToken = crypto.hash(activationToken);
-
         const admin = await prisma.admin.create({
             data: {
                 ...adminInput,
@@ -30,7 +29,6 @@ class AdminService {
                 adminId: admin.id
             }
         });
-
         await mailer.sendActivationMail(adminInput.email, activationToken);
     };
 
@@ -92,7 +90,6 @@ class AdminService {
 
     activate = async (token) => {
         const hashedActivationToken = crypto.hash(token);
-
         const admin = await prisma.admin.findFirst({
             where: {
                 activationToken: hashedActivationToken
@@ -103,7 +100,12 @@ class AdminService {
             }
         });
 
-        if (!admin) throw new CustomError("Invalid Token", 401);
+        if (!admin) {
+            throw new CustomError(
+                "Admin does not exist with with provided Activation Token",
+                404
+            );
+        }
 
         await prisma.admin.update({
             where: {
@@ -126,11 +128,12 @@ class AdminService {
             }
         });
 
-        if (!admin)
+        if (!admin) {
             throw new CustomError(
-                "We could not find a admin with the email you provided",
+                "Admin does not exist with provided email",
                 404
             );
+        }
 
         const passwordResetToken = crypto.createToken();
         const hashedPasswordResetToken = crypto.hash(passwordResetToken);
@@ -161,13 +164,23 @@ class AdminService {
             }
         });
 
-        if (!admin) throw new CustomError("Invalid Token", 401);
+        if (!admin) {
+            throw new CustomError(
+                "Admin does not exist with  provided Password Reset Token",
+                404
+            );
+        }
 
         const currentTime = new Date();
         const tokenExpDate = new Date(admin.passwordResetTokenExpirationDate);
 
-        if (tokenExpDate < currentTime)
-            throw new CustomError("Reset Token Expired", 422);
+        if (tokenExpDate < currentTime) {
+            // Token Expired;
+            throw new CustomError(
+                "Password Reset Token Expired: Request a new one",
+                400
+            );
+        }
 
         await prisma.admin.update({
             where: {
@@ -191,7 +204,7 @@ class AdminService {
                 lastName: true,
                 preferredFirstName: true,
                 email: true,
-                id: true // We now also select the id to query the company information
+                id: true
             }
         });
 
@@ -258,8 +271,9 @@ class AdminService {
         });
 
         const task = admin.tasks.find((task) => task.id === taskId);
-
-        if (!task) throw new CustomError("Task not found", 404);
+        if (!task) {
+            throw new CustomError("Task not found", 404);
+        }
 
         return task;
     };
@@ -277,8 +291,9 @@ class AdminService {
 
         const tasksToKeep = admin.tasks.filter((task) => task.id !== taskId);
 
-        if (tasksToKeep.length === admin.tasks.length)
-            throw new CustomError("Task not found", 404);
+        if (tasksToKeep.length === admin.tasks.length) {
+            throw new CustomError("Task does not exist", 404);
+        }
 
         await prisma.admin.update({
             where: {
@@ -313,7 +328,9 @@ class AdminService {
             }
         });
 
-        if (!taskToUpdate) throw new CustomError("Task not found", 404);
+        if (!taskToUpdate) {
+            throw new CustomError("Task does not exist", 404);
+        }
 
         const updatedTask = {
             ...taskToUpdate,
