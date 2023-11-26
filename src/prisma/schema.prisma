@@ -110,7 +110,6 @@ model Story {
     point       Int?
     due         DateTime?
     assigneeId  String?     @db.ObjectId
-    adminId     String      @db.ObjectId
     createdAt   DateTime    @default(now())
     updatedAt   DateTime    @updatedAt
 }

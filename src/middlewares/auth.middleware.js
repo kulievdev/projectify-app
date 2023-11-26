@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { CustomError } from "../errors/customError.js";
+import { catchAsync } from "../errors/catchAsync.js";
 
 class AuthMiddleware {
     authenticate = (req, _, next) => {
@@ -34,13 +35,68 @@ class AuthMiddleware {
 
         if (!adminId) {
             throw new CustomError(
-                "Forbidden: You are not authorized to perform this action",
+                "Forbidden: Only Admins can perform this action",
                 403
             );
         }
 
         next();
     };
+
+    verifyReadUpdateDeleteStoryPermissions = catchAsync(
+        async (req, _, next) => {
+            const {
+                adminId,
+                teamMember,
+                params: { id }
+            } = req;
+
+            const story = storyService.getOne(id);
+            const { projectId } = story;
+
+            const project = await prisma.project.findUnique({
+                where: {
+                    id: projectId
+                }
+            });
+
+            if (adminId) {
+                if (project.adminId !== adminId) {
+                    throw new CustomError(
+                        "Forbidden: You are not authorized to perform this action",
+                        403
+                    );
+                }
+                req.story = story;
+                next();
+            }
+
+            if (teamMember) {
+                const teamMemberProject =
+                    await prisma.teamMemberProject.findFirst({
+                        where: {
+                            teamMemberId: teamMember.id,
+                            projectId: projectId
+                        }
+                    });
+
+                if (
+                    !teamMemberProject ||
+                    (teamMemberProject &&
+                        teamMemberProject.status === "INACTIVE") ||
+                    project.adminId !== teamMember.adminId
+                ) {
+                    throw new CustomError(
+                        "This story belongs to the project you do not have an access",
+                        403
+                    );
+                }
+
+                req.story = story;
+                next();
+            }
+        }
+    );
 }
 
 export const authMiddleware = new AuthMiddleware();
