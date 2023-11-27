@@ -24,6 +24,57 @@ class StoryService {
 
         return story;
     };
+
+    getAll = async (projectId, adminId) => {
+        await projectService.isProjectBelongsToAdmin(projectId, adminId);
+
+        const stories = await prisma.story.findMany({
+            where: {
+                projectId: projectId
+            }
+        });
+
+        return stories;
+    };
+
+    update = async (id, update) => {
+        const story = await prisma.story.findUnique({
+            where: {
+                id: id
+            }
+        });
+
+        if (!story) {
+            throw new CustomError("Story does not exist", 404);
+        }
+
+        await prisma.story.update({
+            where: {
+                id: id
+            },
+            data: {
+                ...update
+            }
+        });
+    };
+
+    deleteOne = async (id) => {
+        const story = await prisma.story.findUnique({
+            where: {
+                id: id
+            }
+        });
+
+        if (!story) {
+            throw new CustomError("Story does not exist", 404);
+        }
+
+        await prisma.story.delete({
+            where: {
+                id: id
+            }
+        });
+    };
 }
 
 export const storyService = new StoryService();
