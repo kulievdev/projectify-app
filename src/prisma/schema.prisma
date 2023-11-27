@@ -12,22 +12,12 @@ enum AccountStatus {
     INACTIVE
 }
 
+// Admin Model
+
 enum TaskStatus {
     TODO
     INPROGRESS
     DONE
-}
-
-enum StoryStatus {
-    TODO
-    INPROGRESS
-    DONE
-    ARCHIVED
-}
-
-enum TeamMemberProjectStatus {
-    ACTIVE
-    INACTIVE
 }
 
 type Tasks {
@@ -35,7 +25,7 @@ type Tasks {
     title       String
     description String?
     due         DateTime
-    status      TaskStatus
+    status      TaskStatus @default(TODO)
 }
 
 model Admin {
@@ -49,9 +39,9 @@ model Admin {
     activationToken                  String?
     passwordResetToken               String?
     passwordResetTokenExpirationDate DateTime?
+    tasks                            Tasks[]
     createdAt                        DateTime      @default(now())
     updatedAt                        DateTime      @updatedAt
-    tasks                            Tasks[]
 }
 
 model Company {
@@ -61,6 +51,13 @@ model Company {
     adminId   String   @unique @db.ObjectId
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+}
+
+// Project Model
+
+enum ProjectStatus {
+    ACTIVE
+    ARCHIVED
 }
 
 model Project {
@@ -73,10 +70,7 @@ model Project {
     updatedAt   DateTime      @updatedAt
 }
 
-enum ProjectStatus {
-    ACTIVE
-    ARCHIVED
-}
+// Team Member Model
 
 model TeamMember {
     id          String        @id @default(auto()) @map("_id") @db.ObjectId
@@ -92,12 +86,42 @@ model TeamMember {
     updatedAt   DateTime      @updatedAt
 }
 
+// Team Member Model
+
+enum TeamMemberProjectStatus {
+    ACTIVE
+    INACTIVE
+}
+
 model TeamMemberProject {
     id           String                  @id @default(auto()) @map("_id") @db.ObjectId
     teamMemberId String                  @db.ObjectId
     projectId    String                  @db.ObjectId
     status       TeamMemberProjectStatus @default(ACTIVE)
     joinedAt     DateTime                @default(now())
+}
+
+// Story Model
+
+enum StoryStatus {
+    TODO
+    INPROGRESS
+    DONE
+    ARCHIVED
+}
+
+enum SubTaskStatus {
+    TODO
+    INPROGRESS
+    DONE
+}
+
+type SubTasks {
+    id          String
+    title       String
+    description String?
+    due         DateTime
+    status      TaskStatus @default(TODO)
 }
 
 model Story {
