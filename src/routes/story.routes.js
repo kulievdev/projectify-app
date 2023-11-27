@@ -7,7 +7,7 @@ const storyRouter = Router();
 storyRouter.post(
     "/",
     authMiddleware.authenticate,
-    authMiddleware.isAdmin,
+    authMiddleware.verifyCreateStoryPermissions,
     storyController.create
 );
 
@@ -16,6 +16,27 @@ storyRouter.get(
     authMiddleware.authenticate,
     authMiddleware.verifyReadUpdateDeleteStoryPermissions,
     storyController.getOne
+);
+
+storyRouter.get(
+    "/projectStories/:id",
+    authMiddleware.authenticate,
+    authMiddleware.isAdmin,
+    storyController.getAll
+);
+
+storyRouter.patch(
+    "/:id",
+    authMiddleware.authenticate,
+    authMiddleware.verifyReadUpdateDeleteStoryPermissions,
+    storyController.update
+);
+
+storyRouter.delete(
+    "/:id",
+    authMiddleware.authenticate,
+    authMiddleware.verifyReadUpdateDeleteStoryPermissions,
+    storyController.deleteOne
 );
 
 export { storyRouter };
