@@ -1,10 +1,10 @@
 import { prisma } from "../prisma/index.js";
 import { projectService } from "./project.service.js";
+import { v4 as uuid } from "uuid";
 import { CustomError } from "../errors/customError.js";
 
 class StoryService {
-    create = async (input, adminId) => {
-        await projectService.isProjectBelongsToAdmin(input.projectId, adminId);
+    create = async (input) => {
         const story = await prisma.story.create({
             data: input
         });
@@ -18,15 +18,12 @@ class StoryService {
                 id: id
             }
         });
-        if (!story) {
-            throw new CustomError("Story does not exist", 404);
-        }
 
         return story;
     };
 
     getAll = async (projectId, adminId) => {
-        await projectService.isProjectBelongsToAdmin(projectId, adminId);
+        projectService.isProjectBelongsToAdmin(projectId, adminId);
 
         const stories = await prisma.story.findMany({
             where: {
@@ -38,16 +35,6 @@ class StoryService {
     };
 
     update = async (id, update) => {
-        const story = await prisma.story.findUnique({
-            where: {
-                id: id
-            }
-        });
-
-        if (!story) {
-            throw new CustomError("Story does not exist", 404);
-        }
-
         await prisma.story.update({
             where: {
                 id: id
@@ -59,19 +46,95 @@ class StoryService {
     };
 
     deleteOne = async (id) => {
-        const story = await prisma.story.findUnique({
+        await prisma.story.delete({
             where: {
                 id: id
             }
         });
+    };
 
-        if (!story) {
-            throw new CustomError("Story does not exist", 404);
+    createSubTask = async (storyId, input) => {
+        const id = uuid();
+
+        const subTask = {
+            ...input,
+            id: id
+        };
+
+        await prisma.story.update({
+            where: {
+                id: storyId
+            },
+            data: {
+                subTasks: {
+                    push: subTask
+                }
+            }
+        });
+
+        return subTask;
+    };
+
+    getSubTask = async (story, subTaskId) => {
+        const subTask = story.subTasks.find((subTask) => {
+            return subTask.id === subTaskId;
+        });
+
+        return subTask;
+    };
+
+    getAllSubTasks = async (story) => {
+        return story.subTasks;
+    };
+
+    updateSubTask = async (story, subTaskId, input) => {
+        const subTasks = story.subTasks;
+
+        const tasksNotToUpdate = [];
+        let taskToUpdate = null;
+
+        subTasks.forEach((subTask) => {
+            if (subTask.id === subTaskId) {
+                taskToUpdate = subTask;
+            } else {
+                tasksNotToUpdate.push(subTask);
+            }
+        });
+
+        if (!taskToUpdate) {
+            throw new CustomError("SubTask does not exist", 404);
         }
 
-        await prisma.story.delete({
+        const updatedTask = {
+            ...taskToUpdate,
+            ...input
+        };
+
+        await prisma.story.update({
             where: {
-                id: id
+                id: story.id
+            },
+            data: {
+                subTasks: [...tasksNotToUpdate, updatedTask]
+            }
+        });
+    };
+
+    deleteSubTask = async (story, subTaskId) => {
+        const subTasksToKeep = story.subTasks.filter(
+            (subTask) => subTask.id !== subTaskId
+        );
+
+        if (subTasksToKeep.length === story.subTasks.length) {
+            throw new CustomError("SubTask does not exist", 404);
+        }
+
+        await prisma.story.update({
+            where: {
+                id: story.id
+            },
+            data: {
+                subTasks: subTasksToKeep
             }
         });
     };

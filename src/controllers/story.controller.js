@@ -30,7 +30,7 @@ class StoryController {
     getOne = catchAsync(async (req, res) => {
         const { params } = req;
 
-        const story = await storyService.getOne(params.id);
+        const story = await storyService.getOne(params.storyId);
 
         res.status(200).json({
             data: story
@@ -40,7 +40,7 @@ class StoryController {
     getAll = catchAsync(async (req, res) => {
         const { params, adminId } = req;
 
-        const stories = await storyService.getAll(params.id, adminId);
+        const stories = await storyService.getAll(params.projectId, adminId);
         res.status(200).json({
             data: stories
         });
@@ -85,7 +85,7 @@ class StoryController {
             throw new CustomError("No update data provided", 400);
         }
 
-        await storyService.update(params.id, update);
+        await storyService.update(params.storyId, update);
 
         res.status(204).send();
     });
@@ -93,7 +93,95 @@ class StoryController {
     deleteOne = catchAsync(async (req, res) => {
         const { params } = req;
 
-        await storyService.deleteOne(params.id);
+        await storyService.deleteOne(params.storyId);
+
+        res.status(204).send();
+    });
+
+    createSubTask = catchAsync(async (req, res) => {
+        const {
+            params: { storyId },
+            body: { title, description, due }
+        } = req;
+
+        const input = {
+            title: title,
+            description: description,
+            due: due
+        };
+
+        if (!input.title || !input.description || !input.due) {
+            throw new CustomError(
+                "All fields are required: title, description and due date",
+                404
+            );
+        }
+
+        const subtask = await storyService.createSubTask(storyId, input);
+
+        res.status(200).json({
+            data: subtask
+        });
+    });
+
+    getSubTask = catchAsync(async (req, res) => {
+        const {
+            story,
+            params: { subTaskId }
+        } = req;
+
+        const subTask = await storyService.getSubTask(story, subTaskId);
+
+        res.status(200).json({
+            data: subTask
+        });
+    });
+
+    getAllSubTasks = catchAsync(async (req, res) => {
+        const { story } = req;
+
+        const subTasks = await storyService.getAllSubTasks(story);
+
+        res.status(200).json({
+            data: subTasks
+        });
+    });
+
+    updateSubTask = catchAsync(async (req, res) => {
+        const {
+            story,
+            body: { title, description, due },
+            params: { subTaskId }
+        } = req;
+
+        const input = {};
+
+        if (title) {
+            input.title = title;
+        }
+        if (description) {
+            input.description = description;
+        }
+        if (due) {
+            input.due = due;
+        }
+
+        if (!Object.keys(input).length) {
+            throw new CustomError("Update data is required, 400");
+        }
+
+        await storyService.updateSubTask(story, subTaskId, input);
+
+        res.status(204).send();
+    });
+
+    deleteSubTask = catchAsync(async (req, res) => {
+        const {
+            story,
+            params: { subTaskId }
+        } = req;
+
+        await storyService.deleteSubTask(story, subTaskId);
 
         res.status(204).send();
     });
