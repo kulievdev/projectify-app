@@ -86,15 +86,20 @@ class AuthMiddleware {
         }
     });
 
-    verifyReadUpdateDeleteStoryPermissions = catchAsync(
+    verifyReadUpdateDeleteStoryAndSubtaskPermissions = catchAsync(
         async (req, _, next) => {
             const {
                 adminId,
                 teamMember,
-                params: { id }
+                params: { storyId }
             } = req;
 
-            const story = await storyService.getOne(id);
+            const story = await storyService.getOne(storyId);
+
+            if (!story) {
+                throw new CustomError("Story does not exist", 404);
+            }
+
             const { projectId } = story;
 
             const project = await prisma.project.findUnique({
@@ -102,6 +107,13 @@ class AuthMiddleware {
                     id: projectId
                 }
             });
+
+            if (!project) {
+                throw new CustomError(
+                    "The Project of this story does not exist anymore",
+                    404
+                );
+            }
 
             if (adminId) {
                 if (project.adminId !== adminId) {

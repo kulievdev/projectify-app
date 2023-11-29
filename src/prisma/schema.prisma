@@ -121,7 +121,7 @@ type SubTasks {
     title       String
     description String?
     due         DateTime
-    status      TaskStatus @default(TODO)
+    status      SubTaskStatus @default(TODO)
 }
 
 model Story {
@@ -134,6 +134,7 @@ model Story {
     point       Int?
     due         DateTime?
     assigneeId  String?     @db.ObjectId
+    subTasks    SubTasks[]
     createdAt   DateTime    @default(now())
     updatedAt   DateTime    @updatedAt
 }
