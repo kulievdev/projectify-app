@@ -6,6 +6,12 @@ class AdminController {
     signUp = catchAsync(async (req, res) => {
         const { body } = req;
 
+        if (body.password !== body.passwordConfirm)
+            throw new CustomError(
+                "Password and Password Confirmation does not match.",
+                404
+            );
+
         const adminInput = {
             email: body.email,
             preferredFirstName: body.preferredFirstName,
