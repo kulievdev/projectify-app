@@ -9,7 +9,7 @@ class AdminController {
         if (body.password !== body.passwordConfirm)
             throw new CustomError(
                 "Password and Password Confirmation does not match.",
-                404
+                400
             );
 
         const adminInput = {
