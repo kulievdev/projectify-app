@@ -11,6 +11,12 @@ class Mailer {
                 pass: process.env.MAILER_PASS
             }
         });
+
+        this.baseApiURL =
+            process.env.NODE_ENV === "local"
+                ? "http://localhost:4000"
+                : "https://projectify-app.onrender.com";
+        this.baseUiURL = process.env.FRONTEND_URL;
     }
     send = async (mailOptions) => {
         try {
@@ -25,7 +31,7 @@ class Mailer {
             await this.send({
                 to: emailAddress,
                 subject: "Projectify App | Activate Your Account",
-                html: `<a href="http://localhost:4000/admins/activate?activationToken=${token}">Verify your email</a>`
+                html: `<a href=${this.baseApiURL}/admins/activate?activationToken=${token}">Verify your email</a>`
             });
         } catch (error) {
             throw error;
@@ -37,7 +43,7 @@ class Mailer {
             this.send({
                 to: emailAddress,
                 subject: "Projectify App | Reset Password",
-                html: `<a href="http://localhost:3000/reset-password/passwordResetToken=${token}">Reset Your Password</a>`
+                html: `<a href="${this.baseUiURL}/reset-password/passwordResetToken=${token}">Reset Your Password</a>`
             });
         } catch (error) {
             throw error;
@@ -49,7 +55,7 @@ class Mailer {
             await this.send({
                 to: emailAddress,
                 subject: "Projectify App | Welcome to the team",
-                html: `<a href="http://localhost:3000/team-member/create-password?inviteToken=${token}">Click to create a password</a>`
+                html: `<a href="${this.baseUiURL}/team-member/create-password?inviteToken=${token}">Click to create a password</a>`
             });
         } catch (error) {
             throw error;
