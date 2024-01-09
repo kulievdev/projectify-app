@@ -8,7 +8,7 @@ class AdminController {
 
         const adminInput = {
             email: body.email,
-            preferredFirstName: body.preferredName,
+            preferredFirstName: body.preferredFirstName,
             firstName: body.firstName,
             lastName: body.lastName,
             password: body.password
