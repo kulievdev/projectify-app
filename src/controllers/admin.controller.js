@@ -14,12 +14,15 @@ class AdminController {
             password: body.password
         };
 
-        const companyInput = {
-            name: body.company.name,
-            position: body.company.position
-        };
+        const companyInput = {};
+
+        if (body.company) {
+            companyInput.name = body.company.name;
+            companyInput.position = body.company.position;
+        }
 
         await adminService.signUp(adminInput, companyInput);
+
         res.status(201).json({
             message: "Success"
         });
