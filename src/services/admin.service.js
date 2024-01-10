@@ -15,6 +15,7 @@ class AdminService {
         const admin = await prisma.admin.create({
             data: {
                 ...adminInput,
+                email: adminInput.email.toLowerCase(),
                 password: hashedPassword,
                 activationToken: hashedActivationToken
             },
@@ -31,8 +32,9 @@ class AdminService {
                 }
             });
         }
-
-        await mailer.sendActivationMail(adminInput.email, activationToken);
+        if (admin) {
+            await mailer.sendActivationMail(adminInput.email, activationToken);
+        }
     };
 
     login = async (input) => {
