@@ -23,12 +23,15 @@ class AdminService {
             }
         });
 
-        await prisma.company.create({
-            data: {
-                ...companyInput,
-                adminId: admin.id
-            }
-        });
+        if (companyInput.name && companyInput.position) {
+            await prisma.company.create({
+                data: {
+                    ...companyInput,
+                    adminId: admin.id
+                }
+            });
+        }
+
         await mailer.sendActivationMail(adminInput.email, activationToken);
     };
 
