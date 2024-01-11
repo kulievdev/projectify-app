@@ -156,7 +156,7 @@ class AdminService {
         await mailer.sendPasswordResetToken(email, passwordResetToken);
     };
 
-    resetPassword = async (token, password) => {
+    resetPassword = async (token, password, adminId) => {
         const hashedPasswordResetToken = crypto.hash(token);
         const admin = await prisma.admin.findFirst({
             where: {
