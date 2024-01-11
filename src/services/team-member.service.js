@@ -13,6 +13,7 @@ class TeamMemberService {
         await prisma.teamMember.create({
             data: {
                 ...input,
+                email: input.email.toLowerCase(),
                 adminId: adminId,
                 inviteToken: hashedInviteToken
             }
@@ -34,9 +35,13 @@ class TeamMemberService {
             }
         });
 
-        if (!teamMember) {
-            throw new CustomError("Invalid Token", 400);
-        }
+        if (!teamMember) throw new CustomError("Invalid Token", 400);
+
+        if (teamMember.email !== email)
+            throw new CustomError(
+                "Team Member with the provided email does not exist.",
+                400
+            );
 
         await prisma.teamMember.update({
             where: {
