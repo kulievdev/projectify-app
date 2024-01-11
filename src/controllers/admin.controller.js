@@ -82,6 +82,7 @@ class AdminController {
             body: { password, passwordConfirm },
             headers
         } = req;
+
         if (!password || !passwordConfirm) {
             throw new CustomError(
                 "Both Password and Password Confirmation are required",
@@ -100,6 +101,7 @@ class AdminController {
         }
 
         const [bearer, token] = headers.authorization.split(" ");
+
         if (bearer !== "Bearer" || !token) {
             throw new CustomError("Invalid Password Reset Token", 400);
         }

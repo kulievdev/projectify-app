@@ -43,7 +43,7 @@ class Mailer {
             this.send({
                 to: emailAddress,
                 subject: "Projectify App | Reset Password",
-                html: `<a href="${this.baseUiURL}/reset-password/passwordResetToken=${token}">Reset Your Password</a>`
+                html: `<a href="${this.baseUiURL}/admin/reset-password?passwordResetToken=${token}">Reset Your Password</a>`
             });
         } catch (error) {
             throw error;
