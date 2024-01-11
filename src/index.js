@@ -5,7 +5,6 @@ import { projectRouter } from "./routes/project.routes.js";
 import { teamMemberRouter } from "./routes/team-member.routes.js";
 import { storyRouter } from "./routes/story.routes.js";
 import cors from "cors";
-
 import dotenv from "dotenv";
 import { GlobalError } from "./middlewares/global-error.middleware.js";
 
@@ -13,6 +12,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
