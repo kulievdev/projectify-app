@@ -40,19 +40,23 @@ class Mailer {
     };
 
     sendPasswordResetToken = async (emailAddress, token) => {
-        const admin = await prisma.admin.findFirst({
-            where: {
-                email: emailAddress
-            }
-        });
-
         try {
             this.send({
                 to: emailAddress,
                 subject: "Projectify App | Reset Password",
-                html: `<a href="${this.baseApiURL}/${
-                    admin ? "admin" : "team-member"
-                }/reset-password?passwordResetToken=${token}">Reset Your Password</a>`
+                html: `<a href="${this.baseUiURL}/admin/reset-password?passwordResetToken=${token}">Reset Your Password</a>`
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    sendPasswordResetTokenTeamMember = async (emailAddress, token) => {
+        try {
+            this.send({
+                to: emailAddress,
+                subject: "Projectify App | Reset Password",
+                html: `<a href="${this.baseUiURL}/team-member/reset-password?passwordResetToken=${token}">Reset Your Password</a>`
             });
         } catch (error) {
             throw error;
