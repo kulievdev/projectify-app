@@ -12,6 +12,8 @@ teamMemberRouter.post(
 );
 
 teamMemberRouter.patch("/create-password", teamMemberController.createPassword);
+teamMemberRouter.patch("/forgot-password", teamMemberController.forgotPassword);
+teamMemberRouter.patch("/reset-password", teamMemberController.resetPassword);
 
 teamMemberRouter.get(
     "/",
