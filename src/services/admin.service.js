@@ -225,7 +225,7 @@ class AdminService {
             }
         });
 
-        return { ...admin, company };
+        return { ...admin, company, role: "admin" };
     };
 
     createTask = async (adminId, input) => {

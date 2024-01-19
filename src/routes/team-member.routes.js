@@ -37,5 +37,10 @@ teamMemberRouter.patch(
 );
 
 teamMemberRouter.post("/login", teamMemberController.login);
+teamMemberRouter.get(
+    "/me",
+    authMiddleware.authenticate,
+    teamMemberController.getMe
+);
 
 export { teamMemberRouter };

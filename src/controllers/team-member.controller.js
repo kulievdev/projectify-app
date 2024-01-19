@@ -164,6 +164,16 @@ class TeamMemberController {
             me
         });
     });
+
+    getMe = catchAsync(async (req, res) => {
+        const { teamMember } = req;
+
+        const me = await teamMemberService.getMe(teamMember);
+
+        res.status(200).json({
+            data: me
+        });
+    });
 }
 
 export const teamMemberController = new TeamMemberController();

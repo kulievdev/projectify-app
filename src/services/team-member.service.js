@@ -302,6 +302,27 @@ class TeamMemberService {
 
         return { token, projectIds, me: teamMemberWithoutPassword };
     };
+
+    getMe = async (teamMember) => {
+        const teamMemberData = await prisma.teamMember.findUnique({
+            where: {
+                id: teamMember.id
+            },
+            select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+                position: true,
+                id: true
+            }
+        });
+
+        if (!teamMember.id) {
+            throw new Error("Team Member does not exist anymore, 404");
+        }
+
+        return { ...teamMemberData, role: "teamMember" };
+    };
 }
 
 export const teamMemberService = new TeamMemberService();
