@@ -28,7 +28,7 @@ class TeamMemberController {
         await teamMemberService.create(adminId, input);
 
         res.status(201).send({
-            data: `Team member with ${input.email} has been created`
+            message: `Team member with ${input.email} has been created`
         });
     });
 
