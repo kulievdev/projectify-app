@@ -40,6 +40,7 @@ teamMemberRouter.post("/login", teamMemberController.login);
 teamMemberRouter.get(
     "/me",
     authMiddleware.authenticate,
+    authMiddleware.isTeamMember,
     teamMemberController.getMe
 );
 
