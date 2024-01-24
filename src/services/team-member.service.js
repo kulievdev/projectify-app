@@ -138,6 +138,7 @@ class TeamMemberService {
     };
 
     getMe = async (id) => {
+        console.log(id);
         const teamMember = await prisma.teamMember.findUnique({
             where: {
                 id

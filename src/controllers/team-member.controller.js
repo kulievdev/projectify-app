@@ -175,10 +175,11 @@ class TeamMemberController {
     });
 
     getMe = catchAsync(async (req, res) => {
-        const { teamMember } = req;
-        const me = await teamMemberService.getMe(teamMember.id);
+        const { teamMember: id } = req;
 
-        req.status(200).json({
+        const me = await teamMemberService.getMe(id);
+
+        res.status(200).json({
             data: me
         });
     });
