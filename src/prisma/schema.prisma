@@ -81,6 +81,7 @@ model TeamMember {
     password                         String?
     status                           AccountStatus @default(INACTIVE)
     adminId                          String        @db.ObjectId
+    tasks                            Tasks[]
     inviteToken                      String?
     passwordResetToken               String?
     passwordResetTokenExpirationDate DateTime?

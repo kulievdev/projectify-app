@@ -4,6 +4,7 @@ import { crypto } from "../utils/crypto.js";
 import { mailer } from "../utils/mailer.js";
 import { bcrypt } from "../utils/bcrypt.js";
 import jwt from "jsonwebtoken";
+import { v4 as uuid } from "uuid";
 import { date } from "../utils/date.js";
 class TeamMemberService {
     create = async (adminId, input) => {
@@ -327,6 +328,133 @@ class TeamMemberService {
         }
 
         return { ...teamMemberData, role: "teamMember" };
+    };
+
+    createTask = async (teamMemberId, input) => {
+        const id = uuid();
+        const task = {
+            ...input,
+            status: "TODO",
+            id
+        };
+
+        await prisma.teamMember.update({
+            where: {
+                id: teamMemberId
+            },
+            data: {
+                tasks: {
+                    push: task
+                }
+            }
+        });
+
+        return task;
+    };
+
+    getTasks = async (teamMemberId) => {
+        const tasks = await prisma.teamMember.findUnique({
+            where: {
+                id: teamMemberId
+            },
+
+            select: {
+                tasks: true
+            }
+        });
+
+        return tasks;
+    };
+
+    getTask = async (teamMemberId, taskId) => {
+        const teamMember = await prisma.teamMember.findUnique({
+            where: {
+                id: teamMemberId
+            },
+
+            select: {
+                tasks: true
+            }
+        });
+
+        const task = teamMember.tasks.find((task) => task.id === taskId);
+        if (!task) {
+            throw new CustomError("Task not found", 404);
+        }
+
+        return task;
+    };
+
+    deleteTask = async (teamMemberId, taskId) => {
+        const teamMember = await prisma.teamMember.findUnique({
+            where: {
+                id: teamMemberId
+            },
+
+            select: {
+                tasks: true
+            }
+        });
+
+        const tasksToKeep = teamMember.tasks.filter(
+            (task) => task.id !== taskId
+        );
+
+        if (tasksToKeep.length === teamMember.tasks.length) {
+            throw new CustomError("Task does not exist", 404);
+        }
+
+        await prisma.teamMember.update({
+            where: {
+                id: teamMemberId
+            },
+
+            data: {
+                tasks: tasksToKeep
+            }
+        });
+    };
+
+    updateTask = async (teamMemberId, taskId, input) => {
+        const teamMember = await prisma.teamMember.findUnique({
+            where: {
+                id: teamMemberId
+            },
+
+            select: {
+                tasks: true
+            }
+        });
+
+        const tasksNotToUpdate = [];
+        let taskToUpdate = null;
+
+        teamMember.tasks.forEach((task) => {
+            if (task.id === taskId) {
+                taskToUpdate = task;
+            } else {
+                tasksNotToUpdate.push(task);
+            }
+        });
+
+        if (!taskToUpdate) {
+            throw new CustomError("Task does not exist", 404);
+        }
+
+        const updatedTask = {
+            ...taskToUpdate,
+            ...input
+        };
+
+        await prisma.teamMember.update({
+            where: {
+                id: teamMemberId
+            },
+
+            data: {
+                tasks: [...tasksNotToUpdate, updatedTask]
+            }
+        });
     };
 }
 
