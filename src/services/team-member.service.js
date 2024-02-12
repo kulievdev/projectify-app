@@ -11,12 +11,21 @@ class TeamMemberService {
         const inviteToken = crypto.createToken();
         const hashedInviteToken = crypto.hash(inviteToken);
 
-        await prisma.teamMember.create({
+        const teamMember = await prisma.teamMember.create({
             data: {
                 ...input,
                 email: input.email.toLowerCase(),
                 adminId: adminId,
                 inviteToken: hashedInviteToken
+            },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                position: true,
+                joinDate: true,
+                email: true,
+                status: true
             }
         });
 
@@ -24,6 +33,7 @@ class TeamMemberService {
             input.email,
             inviteToken
         );
+        return teamMember;
     };
 
     createPassword = async (inviteToken, password, email) => {
@@ -160,6 +170,25 @@ class TeamMemberService {
         }
 
         return { ...teamMember, role: "teamMember" };
+    };
+
+    getAll = async (adminId) => {
+        const teamMembers = await prisma.teamMember.findMany({
+            where: {
+                adminId: adminId
+            },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                position: true,
+                status: true,
+                joinDate: true
+            }
+        });
+
+        return teamMembers;
     };
 
     changeStatus = async (adminId, teamMemberId, status) => {
@@ -307,27 +336,6 @@ class TeamMemberService {
         };
 
         return { token, projectIds, me: teamMemberWithoutPassword };
-    };
-
-    getMe = async (teamMember) => {
-        const teamMemberData = await prisma.teamMember.findUnique({
-            where: {
-                id: teamMember.id
-            },
-            select: {
-                firstName: true,
-                lastName: true,
-                email: true,
-                position: true,
-                id: true
-            }
-        });
-
-        if (!teamMember.id) {
-            throw new Error("Team Member does not exist anymore, 404");
-        }
-
-        return { ...teamMemberData, role: "teamMember" };
     };
 
     createTask = async (teamMemberId, input) => {

@@ -83,6 +83,7 @@ model TeamMember {
     adminId                          String        @db.ObjectId
     tasks                            Tasks[]
     inviteToken                      String?
+    joinDate                         DateTime
     passwordResetToken               String?
     passwordResetTokenExpirationDate DateTime?
     createdAt                        DateTime      @default(now())
