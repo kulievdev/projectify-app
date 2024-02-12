@@ -142,6 +142,13 @@ class TeamMemberController {
         res.status(204).send();
     });
 
+    delete = catchAsync(async (req, res) => {
+        const { adminId, body } = req;
+        await teamMemberService.delete(adminId, body.teamMemberId);
+
+        res.status(204).send();
+    });
+
     reactivate = catchAsync(async (req, res) => {
         const { adminId, body } = req;
         await teamMemberService.changeStatus(
