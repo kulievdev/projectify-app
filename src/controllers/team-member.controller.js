@@ -184,7 +184,9 @@ class TeamMemberController {
     });
 
     getMe = catchAsync(async (req, res) => {
-        const { teamMember: id } = req;
+        const {
+            teamMember: { id }
+        } = req;
 
         const me = await teamMemberService.getMe(id);
 
