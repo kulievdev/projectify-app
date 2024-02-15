@@ -74,6 +74,27 @@ class TeamMemberService {
         });
     };
 
+    update = async (adminId, teamMemberId, input) => {
+        const teamMember = await prisma.teamMember.findUnique({
+            where: {
+                id: teamMemberId,
+                adminId: adminId
+            }
+        });
+
+        if (!teamMember) {
+            throw new CustomError("Team Member does not exist", 404);
+        }
+
+        await prisma.teamMember.update({
+            where: {
+                id: teamMemberId
+            },
+
+            data: input
+        });
+    };
+
     createPassword = async (inviteToken, password, email) => {
         const hashedInviteToken = crypto.hash(inviteToken);
         const hashedPassword = await bcrypt.hash(password);

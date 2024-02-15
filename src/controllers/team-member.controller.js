@@ -152,6 +152,35 @@ class TeamMemberController {
         res.status(204).send();
     });
 
+    update = catchAsync(async (req, res) => {
+        const { adminId, params, body } = req;
+
+        const input = {};
+
+        if (body.firstName) {
+            input.firstName = body.firstName;
+        }
+        if (body.lastName) {
+            input.lastName = body.lastName;
+        }
+        if (body.email) {
+            input.email = body.email;
+        }
+        if (body.position) {
+            input.position = body.position;
+        }
+        if (body.joinDate) {
+            input.joinDate = body.joinDate;
+        }
+
+        if (!Object.keys(input).length) {
+            throw new CustomError("Update data is required, 400");
+        }
+
+        await teamMemberService.update(adminId, params.id, input);
+        res.status(204).send();
+    });
+
     login = catchAsync(async (req, res) => {
         const {
             body: { email, password }

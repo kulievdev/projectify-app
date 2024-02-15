@@ -41,6 +41,13 @@ teamMemberRouter.delete(
     authMiddleware.isAdmin,
     teamMemberController.delete
 );
+teamMemberRouter.patch(
+    "/:id/update",
+    authMiddleware.authenticate,
+    authMiddleware.isAdmin,
+    teamMemberController.update
+);
+
 teamMemberRouter.post("/login", teamMemberController.login);
 teamMemberRouter.get(
     "/me",
