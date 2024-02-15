@@ -37,7 +37,7 @@ class TeamMemberService {
     };
 
     delete = async (adminId, teamMemberId) => {
-        const teamMember = await prisma.teamMember.findFirst({
+        const teamMember = await prisma.teamMember.findUnique({
             where: {
                 id: teamMemberId
             }
@@ -62,7 +62,8 @@ class TeamMemberService {
             teamMember.status === "DEACTIVATED"
         ) {
             throw new CustomError(
-                "Only users with INACTIVE status can be deleted!"
+                "Only users with INACTIVE status can be deleted!",
+                404
             );
         }
 
@@ -249,11 +250,12 @@ class TeamMemberService {
             );
         }
 
-        if (teamMember.status === status)
+        if (teamMember.status === "INACTIVE") {
             throw new CustomError(
-                `This Team Member already has ${status} status!`,
-                400
+                "Status Change is now allowed. Users with INACTIVE status can be deleted only!",
+                403
             );
+        }
 
         await prisma.teamMember.update({
             where: {

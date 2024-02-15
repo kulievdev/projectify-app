@@ -23,20 +23,20 @@ teamMemberRouter.get(
 );
 
 teamMemberRouter.patch(
-    "/deactivate",
+    "/:id/deactivate",
     authMiddleware.authenticate,
     authMiddleware.isAdmin,
     teamMemberController.deactivate
 );
 
 teamMemberRouter.patch(
-    "/reactivate",
+    "/:id/reactivate",
     authMiddleware.authenticate,
     authMiddleware.isAdmin,
     teamMemberController.reactivate
 );
 teamMemberRouter.delete(
-    "/delete",
+    "/:id/delete",
     authMiddleware.authenticate,
     authMiddleware.isAdmin,
     teamMemberController.delete
