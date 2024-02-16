@@ -122,6 +122,36 @@ class AdminController {
         });
     });
 
+    updateMe = catchAsync(async (req, res) => {
+        const { adminId, body } = req;
+
+        const input = {};
+        if (body.firstName) {
+            input.firstName = body.firstName;
+        }
+        if (body.lastName) {
+            input.lastName = body.lastName;
+        }
+        if (body.preferredFirstName) {
+            input.preferredFirstName = body.preferredFirstName;
+        }
+        if (body.oldPassword) {
+            input.oldPassword = body.oldPassword;
+        }
+        if (body.newPassword) {
+            input.newPassword = body.newPassword;
+        }
+        if (body.newPasswordConfirm) {
+            input.newPasswordConfirm = body.newPasswordConfirm;
+        }
+
+        const me = await adminService.updateMe(adminId, input);
+
+        res.status(200).json({
+            data: me
+        });
+    });
+
     createTask = catchAsync(async (req, res) => {
         const { adminId, body } = req;
 

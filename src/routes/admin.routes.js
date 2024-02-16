@@ -17,6 +17,13 @@ adminRouter.get(
 );
 
 adminRouter.patch(
+    "/me",
+    authMiddleware.authenticate,
+    authMiddleware.isAdmin,
+    adminController.updateMe
+);
+
+adminRouter.patch(
     "/me/tasks",
     authMiddleware.authenticate,
     authMiddleware.isAdmin,
