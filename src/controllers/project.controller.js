@@ -7,11 +7,15 @@ class ProjectController {
         const { body, adminId } = req;
         const input = {
             name: body.name,
-            description: body.description
+            description: body.description,
+            dueDate: body.dueDate
         };
 
-        if (!input.name || !input.description) {
-            throw new CustomError("Name and Description are required", 400);
+        if (!input.name || !input.description || !input.dueDate) {
+            throw new CustomError(
+                "Name, Description and Due Date are required",
+                400
+            );
         }
 
         const project = await projectService.create(input, adminId);
