@@ -59,18 +59,18 @@ projectRouter.patch(
     projectController.archive
 );
 
-projectRouter.delete(
-    "/:id",
-    authMiddleware.authenticate,
-    authMiddleware.isAdmin,
-    projectController.delete
-);
-
 projectRouter.patch(
     "/:id/reactivate",
     authMiddleware.authenticate,
     authMiddleware.isAdmin,
     projectController.reactivate
+);
+
+projectRouter.delete(
+    "/:id",
+    authMiddleware.authenticate,
+    authMiddleware.isAdmin,
+    projectController.delete
 );
 
 export { projectRouter };
