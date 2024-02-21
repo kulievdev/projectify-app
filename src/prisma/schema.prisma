@@ -59,6 +59,7 @@ model Company {
 enum ProjectStatus {
     ACTIVE
     ARCHIVED
+    COMPLETED
 }
 
 model Project {
