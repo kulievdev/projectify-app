@@ -216,6 +216,29 @@ class TeamMemberController {
         });
     });
 
+    updateMe = catchAsync(async (req, res) => {
+        const {
+            teamMember: { id },
+            body
+        } = req;
+
+        const input = {};
+
+        if (body.oldPassword) {
+            input.oldPassword = body.oldPassword;
+        }
+        if (body.newPassword) {
+            input.newPassword = body.newPassword;
+        }
+        if (body.newPasswordConfirm) {
+            input.newPasswordConfirm = body.newPasswordConfirm;
+        }
+
+        await teamMemberService.updateMe(id, input);
+
+        res.status(204).send();
+    });
+
     createTask = catchAsync(async (req, res) => {
         const {
             teamMember: { id },

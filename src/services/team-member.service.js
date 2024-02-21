@@ -208,7 +208,6 @@ class TeamMemberService {
     };
 
     getMe = async (id) => {
-        console.log(id);
         const teamMember = await prisma.teamMember.findUnique({
             where: {
                 id
@@ -229,6 +228,58 @@ class TeamMemberService {
         }
 
         return { ...teamMember, role: "teamMember" };
+    };
+
+    updateMe = async (teamMemberId, input) => {
+        const teamMember = await prisma.teamMember.findUnique({
+            where: {
+                id: teamMemberId
+            },
+            select: {
+                password: true
+            }
+        });
+
+        if (!teamMember) {
+            throw new Error("Team Member does not exist anymore", 400);
+        }
+
+        let isPasswordMatches;
+        let hashedNewPassword;
+
+        if (
+            input.oldPassword &&
+            input.newPassword &&
+            input.newPasswordConfirm
+        ) {
+            isPasswordMatches = await bcrypt.compare(
+                input.oldPassword,
+                teamMember.password
+            );
+
+            if (!isPasswordMatches)
+                throw new Error(
+                    "Incorrect current password. Please ensure that you've entered the correct current password and try again. If your forgot your password, please log out and reset your password instead.",
+                    401
+                );
+
+            if (input.newPassword !== input.newPasswordConfirm)
+                throw new Error(
+                    "New Password and New Password Confirmation does not match",
+                    400
+                );
+
+            hashedNewPassword = await bcrypt.hash(input.newPassword);
+        }
+
+        await prisma.teamMember.update({
+            where: {
+                id: teamMemberId
+            },
+            data: {
+                password: hashedNewPassword
+            }
+        });
     };
 
     getAll = async (adminId) => {
