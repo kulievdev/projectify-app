@@ -109,6 +109,41 @@ class ProjectService {
         });
     };
 
+    delete = async (adminId, projectId) => {
+        const project = await prisma.project.findUnique({
+            where: {
+                id: projectId
+            }
+        });
+
+        if (!project) {
+            throw new CustomError(
+                `Project does not exist with following id ${projectId}`,
+                404
+            );
+        }
+
+        if (project.adminId !== adminId) {
+            throw new CustomError(
+                "Forbidden: You are not authorized to perform this action",
+                403
+            );
+        }
+
+        if (project.status === "ACTIVE") {
+            throw new CustomError(
+                "Only projects with ARCHIVED or COMPLETED status can be deleted!",
+                404
+            );
+        }
+
+        await prisma.project.delete({
+            where: {
+                id: projectId
+            }
+        });
+    };
+
     addContributor = async (projectId, teamMemberId, adminId) => {
         await this.isProjectBelongsToAdmin(projectId, adminId);
         await teamMemberService.isTeamMemberBelongsToAdmin(

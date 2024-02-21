@@ -70,6 +70,13 @@ class ProjectController {
         res.status(204).send();
     });
 
+    delete = catchAsync(async (req, res) => {
+        const { adminId, params } = req;
+        await projectService.delete(adminId, params.id);
+
+        res.status(204).send();
+    });
+
     reactivate = catchAsync(async (req, res) => {
         const { params, adminId } = req;
 
