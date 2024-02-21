@@ -105,7 +105,8 @@ model TeamMemberProject {
     teamMemberId String                  @db.ObjectId
     projectId    String                  @db.ObjectId
     status       TeamMemberProjectStatus @default(ACTIVE)
-    joinedAt     DateTime                @default(now())
+    joinedAt     DateTime
+    updatedAt    DateTime                @updatedAt
 }
 
 // Story Model
