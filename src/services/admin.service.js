@@ -274,7 +274,7 @@ class AdminService {
             hashedNewPassword = await bcrypt.hash(input.newPassword);
         }
 
-        if (hashedNewPassword === teamMember.password)
+        if (hashedNewPassword === admin.password)
             throw new Error(
                 "You are using your old password again, please choose a different password.",
                 400

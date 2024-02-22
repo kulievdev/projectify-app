@@ -126,6 +126,7 @@ class AdminController {
         const { adminId, body } = req;
 
         const input = {};
+
         if (body.firstName) {
             input.firstName = body.firstName;
         }
