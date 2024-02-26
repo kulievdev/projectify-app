@@ -70,10 +70,10 @@ class ProjectController {
         });
     });
 
-    archive = catchAsync(async (req, res) => {
-        const { params, adminId } = req;
+    changeStatus = catchAsync(async (req, res) => {
+        const { body, params, adminId } = req;
 
-        await projectService.changeStatus(params.id, adminId, "ARCHIVED");
+        await projectService.changeStatus(params.id, adminId, body.status);
         res.status(204).send();
     });
 
@@ -81,13 +81,6 @@ class ProjectController {
         const { adminId, params } = req;
         await projectService.delete(adminId, params.id);
 
-        res.status(204).send();
-    });
-
-    reactivate = catchAsync(async (req, res) => {
-        const { params, adminId } = req;
-
-        await projectService.changeStatus(params.id, adminId, "ACTIVE");
         res.status(204).send();
     });
 

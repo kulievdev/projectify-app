@@ -53,17 +53,10 @@ projectRouter.get(
 );
 
 projectRouter.patch(
-    "/:id/archive",
+    "/:id/change-status",
     authMiddleware.authenticate,
     authMiddleware.isAdmin,
-    projectController.archive
-);
-
-projectRouter.patch(
-    "/:id/reactivate",
-    authMiddleware.authenticate,
-    authMiddleware.isAdmin,
-    projectController.reactivate
+    projectController.changeStatus
 );
 
 projectRouter.delete(
