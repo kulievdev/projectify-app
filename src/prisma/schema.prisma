@@ -58,6 +58,7 @@ model Company {
 
 enum ProjectStatus {
     ACTIVE
+    ONHOLD
     ARCHIVED
     COMPLETED
 }
@@ -67,7 +68,9 @@ model Project {
     name        String
     description String
     status      ProjectStatus @default(ACTIVE)
-    dueDate     DateTime
+    progress    Int           @default(0)
+    startDate   DateTime
+    endDate     DateTime
     adminId     String        @db.ObjectId
     createdAt   DateTime      @default(now())
     updatedAt   DateTime      @updatedAt
