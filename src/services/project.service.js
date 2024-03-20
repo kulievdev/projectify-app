@@ -71,7 +71,22 @@ class ProjectService {
             }
         });
 
-        return projects;
+        const contributors = await Promise.all(
+            projects.map((project) =>
+                this.getContributorsByProjectId(project.id, "ACTIVE")
+            )
+        );
+
+        const projectsWithNumberOfContributors = projects.map(
+            (project, idx) => {
+                return {
+                    ...project,
+                    numberOfContributors: contributors[idx].length
+                };
+            }
+        );
+
+        return projectsWithNumberOfContributors;
     };
 
     changeStatus = async (id, adminId, status) => {
