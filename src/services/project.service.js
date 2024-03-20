@@ -211,26 +211,15 @@ class ProjectService {
             }
         });
 
-        const contributors = await prisma.contributor.findMany({
-            where: {
-                teamMemberId: {
-                    in: teamMembers.map((teamMember) => teamMember.id)
-                },
-                projectId: projectId
-            },
-
-            select: {
-                teamMemberId: true,
-                status: true
-            }
-        });
+        const contributors = await this.getContributorsByProjectId(projectId);
 
         const teamMembersObj = objectifyArr(teamMembers, "id");
 
         const contributorsWithDetails = contributors.map((contributor) => {
             return {
                 ...teamMembersObj[contributor.teamMemberId],
-                status: contributor.status
+                status: contributor.status,
+                joinedAt: contributor.joinedAt
             };
         });
 
@@ -262,6 +251,30 @@ class ProjectService {
                 404
             );
         }
+    };
+
+    getContributorsByProjectId = async (id, status) => {
+        const where = {
+            projectId: id
+        };
+
+        if (status) {
+            where.status = status;
+        }
+
+        const contributors = await prisma.contributor.findMany({
+            where: {
+                ...where
+            },
+
+            select: {
+                teamMemberId: true,
+                status: true,
+                joinedAt: true
+            }
+        });
+
+        return contributors;
     };
 }
 
