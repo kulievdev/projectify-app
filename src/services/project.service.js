@@ -174,6 +174,7 @@ class ProjectService {
                 teamMemberId: true
             }
         });
+
         return data;
     };
 

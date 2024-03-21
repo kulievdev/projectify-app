@@ -118,7 +118,7 @@ class ProjectController {
         );
 
         res.status(200).json({
-            message: data
+            data
         });
     });
 
