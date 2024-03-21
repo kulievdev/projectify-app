@@ -170,7 +170,8 @@ class ProjectService {
             data: { projectId, teamMemberId },
             select: {
                 status: true,
-                joinedAt: true
+                joinedAt: true,
+                teamMemberId: true
             }
         });
         return data;
