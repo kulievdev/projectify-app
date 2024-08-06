@@ -6,7 +6,7 @@ const adminRouter = Router();
 
 adminRouter.post("/sign-up", adminController.signUp);
 adminRouter.post("/login", adminController.login);
-adminRouter.get("/activate", adminController.activate);
+adminRouter.get("/activate-account", adminController.activate);
 adminRouter.patch("/forgot-password", adminController.forgotPassword);
 adminRouter.patch("/reset-password", adminController.resetPassword);
 adminRouter.get(

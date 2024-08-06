@@ -13,7 +13,8 @@ class Mailer {
             }
         });
 
-        this.baseUiURL = process.env.UI_BASE_URL;
+        // this.baseUiURL = process.env.UI_BASE_URL;
+        this.baseUiURL = process.env.UI_BASE_URL_LOCAL;
     }
     send = async (mailOptions) => {
         try {
@@ -28,7 +29,7 @@ class Mailer {
             await this.send({
                 to: emailAddress,
                 subject: "Projectify App | Activate Your Account",
-                html: `<a href="${this.baseUiURL}/admin/activate?activationToken=${token}">Verify your email</a>`
+                html: `<a href="${this.baseUiURL}/admin/activate-account?activationToken=${token}">Verify your email</a>`
             });
         } catch (error) {
             throw error;
