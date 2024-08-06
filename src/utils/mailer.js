@@ -14,7 +14,6 @@ class Mailer {
         });
 
         this.baseUiURL = process.env.UI_BASE_URL;
-        // this.baseUiURL = process.env.UI_BASE_URL_LOCAL;
     }
     send = async (mailOptions) => {
         try {

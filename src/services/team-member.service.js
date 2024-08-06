@@ -410,7 +410,7 @@ class TeamMemberService {
 
         if (teamMember.status === "INACTIVE" && teamMember.password) {
             throw new CustomError(
-                "Your account has INACTIVE Status, can not log in",
+                "Oops. You do not have an access to the platform anymore!",
                 401
             );
         }
@@ -424,17 +424,17 @@ class TeamMemberService {
             throw new CustomError("Invalid Credentials", 401);
         }
 
-        const projects = await prisma.teamMemberProject.findMany({
-            where: {
-                teamMemberId: teamMember.id,
-                status: "ACTIVE"
-            },
-            select: {
-                projectId: true
-            }
-        });
+        // const projects = await prisma.teamMemberProject.findMany({
+        //     where: {
+        //         teamMemberId: teamMember.id,
+        //         status: "ACTIVE"
+        //     },
+        //     select: {
+        //         projectId: true
+        //     }
+        // });
 
-        const projectIds = projects.map((project) => project.projectId);
+        // const projectIds = projects.map((project) => project.projectId);
 
         const token = jwt.sign(
             {
@@ -449,12 +449,13 @@ class TeamMemberService {
             }
         );
 
-        const teamMemberWithoutPassword = {
-            firstName: teamMember.firstName,
-            lastName: teamMember.lastName
-        };
+        // const teamMemberWithoutPassword = {
+        //     firstName: teamMember.firstName,
+        //     lastName: teamMember.lastName
+        // };
 
-        return { token, projectIds, me: teamMemberWithoutPassword };
+        // return { token, projectIds, me: teamMemberWithoutPassword };
+        return token;
     };
 
     createTask = async (teamMemberId, input) => {

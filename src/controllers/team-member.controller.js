@@ -193,14 +193,19 @@ class TeamMemberController {
             );
         }
 
-        const { token, projectIds, me } = await teamMemberService.login(
-            email,
-            password
-        );
+        // const { token, projectIds, me } = await teamMemberService.login(
+        //     email,
+        //     password
+        // );
+        // res.status(200).json({
+        //     token,
+        //     projectIds,
+        //     me
+        // });
+
+        const jwt = await teamMemberService.login(email, password);
         res.status(200).json({
-            token,
-            projectIds,
-            me
+            token: jwt
         });
     });
 
